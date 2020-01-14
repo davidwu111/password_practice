@@ -96,7 +96,7 @@ class User(object):
         if result:
             print('User %s is correct!' % self._username)
         else:
-            print('User creation failed.')
+            print('User verification failed.')
 
     def delete_user(self):
         user = DbActions(self._dbfilename, self._dbtable)
@@ -104,7 +104,7 @@ class User(object):
         if result:
             print('User %s deleted!' % self._username)
         else:
-            print('User creation failed.')
+            print('User deletion failed.')
 
     def md5_encoding(self, _str):
         str_original = _str
@@ -114,10 +114,26 @@ class User(object):
 
 
 if __name__ == "__main__":
-    print('start')
+    print(
+        'Select what action you would like to perform: \n'
+        '1. Create new user \n'
+        '2. Verify this user \n'
+        '3. Delete this user \n'
+    )
+    print('Make your choice:')
+    choice = int(input())
     print('Username:')
     username = input().strip()
     print('Password:')
     password = input().strip()
-    newUser = User(username, password)
-    newUser.add_user()
+    if choice == 1:
+        newUser = User(username, password)
+        newUser.add_user()
+    elif choice == 2:
+        verifyUser = User(username, password)
+        verifyUser.user_verify()
+    elif choice == 3:
+        deleteUser = User(username,password)
+        deleteUser.delete_user()
+    else:
+        print('You made the wrong choice.')
