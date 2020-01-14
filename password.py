@@ -50,24 +50,30 @@ class DbActions:
             return 0
 
     def verify(self, username, password):
-        self.cursor.execute('select PwdMD5 from USERS where Username=?', (username))
-        _real_password = self.cursor.fetchone()
-        if _real_password[0] == password:
-            return 1
-        else:
+        try:
+            self.cursor.execute('select PwdMD5 from USERS where Username= %s' % username)
+            _real_password = self.cursor.fetchone()
+            if _real_password[0] == password:
+                return 1
+            else:
+                return 0
+        except _sqlite3.OperationalError:
             return 0
 
     def delete_user(self, username, password):
-        self.cursor.execute('select PwdMD5 from USERS where Username=?', (username))
-        _real_password = self.cursor.fetchone()
-        if _real_password[0] == password:
-            try:
-                self.cursor.execute('DELETE FROM USERS WHERE Username=?', username)
-                self.conn.commit()
-                return 1
-            except:
+        try:
+            self.cursor.execute('select PwdMD5 from USERS where Username= %s' % username)
+            _real_password = self.cursor.fetchone()
+            if _real_password[0] == password:
+                try:
+                    self.cursor.execute('DELETE FROM USERS WHERE Username=%s' % username)
+                    self.conn.commit()
+                    return 1
+                except:
+                    return 0
+            else:
                 return 0
-        else:
+        except _sqlite3.OperationalError:
             return 0
 
 
