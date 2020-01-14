@@ -70,16 +70,36 @@ class User(object):
     def __init__(self, username, password):
         self._username = username
         self._password = password
+        self._dbfilename = 'users.db'
+        self._dbtable = 'USERS'
 
     @property
     def username(self):
         return self._username
 
     def add_user(self):
+        new_user = DbActions(self._dbfilename, self._dbtable)
+        result = new_user.add(self._username, self.md5_encoding(self._password))
+        if result:
+            print('User %s created!' % self._username)
+        else:
+            print('User creation failed.')
 
     def user_verify(self):
+        user = DbActions(self._dbfilename, self._dbtable)
+        result = user.verify(self._username, self.md5_encoding(self._password))
+        if result:
+            print('User %s is correct!' % self._username)
+        else:
+            print('User creation failed.')
 
     def delete_user(self):
+        user = DbActions(self._dbfilename, self._dbtable)
+        result = user.delete_user(self._username, self.md5_encoding(self._password))
+        if result:
+            print('User %s deleted!' % self._username)
+        else:
+            print('User creation failed.')
 
     def md5_encoding(self, _str):
         str_original = _str
