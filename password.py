@@ -139,7 +139,11 @@ if __name__ == "__main__":
         verifyUser = User(username, password)
         verifyUser.user_verify()
     elif choice == 3:
-        deleteUser = User(username,password)
-        deleteUser.delete_user()
+        print('Are you sure you want to delete? (Y/N)')
+        if input() == 'Y':
+            deleteUser = User(username,password)
+            deleteUser.delete_user()
+        else:
+            print('Deletion cancelled.')
     else:
         print('You made the wrong choice.')
