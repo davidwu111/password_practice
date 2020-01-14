@@ -38,7 +38,7 @@ class DbActions:
     def add(self, username, password):
         self.cursor.execute('select max(serial) from USERS')
         current_serial = self.cursor.fetchone()
-        serial = current_serial(0) + 1
+        serial = current_serial[0] + 1
         try:
             self.cursor.execute('insert into USERS values (?,?,?, datetime(\'now\', \'localtime\')',(username,password,serial))
             return 1
@@ -48,7 +48,7 @@ class DbActions:
     def verify(self, username, password):
         self.cursor.execute('select PwdMD5 from USERS where Username=?',(username))
         _real_password = self.cursor.fetchone()
-        if _real_password(0) == password:
+        if _real_password[0] == password:
             return 1
         else:
             return 0
@@ -56,7 +56,7 @@ class DbActions:
     def delete_user(self, username, password):
         self.cursor.execute('select PwdMD5 from USERS where Username=?', (username))
         _real_password = self.cursor.fetchone()
-        if _real_password(0) == password:
+        if _real_password[0] == password:
             try:
                 self.cursor.execute('DELETE FROM USERS WHERE Username=?', username)
                 return 1
