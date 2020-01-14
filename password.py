@@ -8,6 +8,7 @@ Added function to create new users or delete existing from database.
 import _sqlite3
 import hashlib
 import os
+import time
 
 
 class DbActions:
@@ -39,14 +40,17 @@ class DbActions:
         self.cursor.execute('select max(serial) from USERS')
         current_serial = self.cursor.fetchone()
         serial = current_serial[0] + 1
+        timeNow = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
+        values = (username, password, serial, timeNow)
         try:
-            self.cursor.execute('insert into USERS values (?,?,?, datetime(\'now\', \'localtime\')',(username,password,serial))
+            self.cursor.execute("insert into USERS values (?, ?, ?, ?)", values)
+            self.conn.commit()
             return 1
         except:
             return 0
 
     def verify(self, username, password):
-        self.cursor.execute('select PwdMD5 from USERS where Username=?',(username))
+        self.cursor.execute('select PwdMD5 from USERS where Username=?', (username))
         _real_password = self.cursor.fetchone()
         if _real_password[0] == password:
             return 1
@@ -59,6 +63,7 @@ class DbActions:
         if _real_password[0] == password:
             try:
                 self.cursor.execute('DELETE FROM USERS WHERE Username=?', username)
+                self.conn.commit()
                 return 1
             except:
                 return 0
@@ -116,4 +121,3 @@ if __name__ == "__main__":
     password = input().strip()
     newUser = User(username, password)
     newUser.add_user()
-
